@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Get time from public API, should use NTP for this. 
+json_string=$(wget -O - http://worldtimeapi.org/api/ip)
+
+# Extract the datetime value using jq
+datetime=$(echo $json_string | jq -r '.datetime')
+
+# Parse the datetime and format it as mmddhhmmyyy
+/etc/init.d/./setTime.sh "$datetime"

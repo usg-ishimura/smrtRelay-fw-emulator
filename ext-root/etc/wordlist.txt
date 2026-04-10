@@ -1,0 +1,7 @@
+iot
+test
+1234
+root
+admin
+password
+tcm

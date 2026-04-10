@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dumb Thing</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <h1>Dumb Thing Light Control Page</h1>
+
+    <div class="container">
+        <h2>ON and OFF</h2>
+        <h2>Status: <span id="status"></span></h2>
+        <button id="onButton" class="button" onclick="sendPostOn()">On</button>
+        <button id="offButton" class="button" onclick="sendPostOff()">Off</button>
+    </div>
+    <div class="container">
+        <h1>Set System Time</h1>
+        <form action="/schedule">
+            <h2>Current System Time: <span id="systemTime"></span></h2>
+            <h2>Update System Time: <span id="time"></span></h2>
+            <input type="datetime-local" id="time" name="time">
+            <br><br>
+            <input type="submit" onclick="getStatus" value="update">
+        </form>
+    </div>
+    <div class="container">
+        <h1>Schedule On and Off Time</h1>
+        <form action="/schedule">
+            <h2>Current Scheduled On Time: <span id="onScheduleTime"></span></h2>
+            <h2>Schedule On Time: <span id="onSchedule"></span></h2>
+            <input type="datetime-local" id="ontime" name="ontime">
+            <br><br>
+            <input type="submit" onclick="getStatus" value="update">
+        </form>
+        <form action="/schedule">
+            <h2>Current Scheduled Off Time: <span id="offScheduleTime"></span></h2>
+            <h2>Update Off Time Schedule: <span id="offSchedule"></span></h2>
+            <input type="datetime-local" id="offtime" name="offtime">
+            <br><br>
+            <input type="submit" onclick="getStatus" value="update">
+        </form>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initial call to retrieve status
+            getStatus();
+        });
+
+        // Function to retrieve status via GET request
+        function getStatus() {
+            // Make a GET request to retrieve the status
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/status", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    // Parse the response and update the status display
+                    var status = JSON.parse(xhr.responseText).status;
+                    var onSchedule = JSON.parse(xhr.responseText).onSchedule;
+                    var offSchedule = JSON.parse(xhr.responseText).offSchedule;
+                    var currentTime = JSON.parse(xhr.responseText).currentTime;
+                    updateFullStatus(status, onSchedule, offSchedule, currentTime);
+                }
+            };
+            xhr.send();
+        }
+
+        // Function to update the status display
+        function updateFullStatus(status, onSchedule, offSchedule, systemTime) {
+            var statusElement = document.getElementById("status");
+            statusElement.textContent = status ? "ON" : "OFF";
+            statusElement.style.color = status ? "green" : "red";
+            var onScheduleElement = document.getElementById("onScheduleTime");
+            onScheduleElement.textContent = onSchedule;
+            var offScheduleElement = document.getElementById("offScheduleTime");
+            offScheduleElement.textContent = offSchedule;
+            var systemTimeElement = document.getElementById("systemTime");
+            systemTimeElement.textContent = systemTime;
+        }
+
+        function updateStatus(status) {
+            var statusElement = document.getElementById("status");
+            statusElement.textContent = status ? "ON" : "OFF";
+            statusElement.style.color = status ? "green" : "red";
+        }
+
+
+
+        function sendPostOn() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/on", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    updateStatus(true);
+                }
+            };
+            xhr.send();
+        }
+
+        function sendPostOff() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/off", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    updateStatus(false);
+                }
+            };
+            xhr.send();
+        }
+
+    </script>
+
+</body>
+
+</html>

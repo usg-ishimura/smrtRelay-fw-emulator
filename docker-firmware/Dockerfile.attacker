@@ -1,0 +1,33 @@
+FROM debian:bookworm-slim
+
+# ── system packages ───────────────────────────────────────────────────────────
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        qemu-user-static \
+        python3 \
+        file \
+        netcat-traditional \
+        net-tools \
+        iproute2 \
+        iputils-ping \
+        curl \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── ttyd (web terminal) ───────────────────────────────────────────────────────
+RUN TTYD_VER=1.7.7 && \
+    ARCH=$(dpkg --print-architecture) && \
+    case "$ARCH" in \
+        amd64)   TTYD_BIN=ttyd.x86_64  ;; \
+        arm64)   TTYD_BIN=ttyd.aarch64 ;; \
+        *)       TTYD_BIN=ttyd.x86_64  ;; \
+    esac && \
+    curl -fsSL \
+        "https://github.com/tsl0922/ttyd/releases/download/${TTYD_VER}/${TTYD_BIN}" \
+        -o /usr/local/bin/ttyd && \
+    chmod +x /usr/local/bin/ttyd
+
+# ── attacker shell only ───────────────────────────────────────────────────────
+COPY uart-sim/attacker-shell.sh /usr/local/lib/.session
+RUN chmod 755 /usr/local/lib/.session
+
+ENTRYPOINT ["ttyd", "--port", "7682", "--base-path", "/attacker", "--writable", "/usr/local/lib/.session"]

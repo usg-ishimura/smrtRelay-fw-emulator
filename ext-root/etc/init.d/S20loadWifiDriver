@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "loading WiFi Driver"
+modprobe brcmfmac

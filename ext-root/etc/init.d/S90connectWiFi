@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "Connecting to WiFi network supplied in wpa_supplicant"
+wpa_supplicant -B -c /etc/wpa_supplicant.conf -i wlan0
+echo "Obtaining IP via dhcp"
+dhclient wlan0

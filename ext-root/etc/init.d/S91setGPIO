@@ -1,0 +1,29 @@
+#!/bin/bash
+echo "Setting GPIO Pins"
+
+echo 4 > /sys/class/gpio/export
+
+echo out > /sys/class/gpio/gpio4/direction
+
+# Read the XML content from a file
+xml_content=$(cat /var/config/config.xml)
+
+# Extract the line containing lightvalue using grep
+line=$(echo "$xml_content" | grep 'lightvalue="')
+
+# Extract the lightvalue using bash string manipulation
+lightvalue=$(echo "$line" | grep -o 'lightvalue="[01]"' | cut -d '"' -f 2)
+
+# Check the value and print true or false
+if [ "$lightvalue" == "1" ]; then
+    echo "Light value read as ON"
+    echo 1 > /sys/class/gpio/gpio4/value
+
+elif [ "$lightvalue" == "0" ]; then
+    echo "Light value read as OFF"
+    echo 0 > /sys/class/gpio/gpio4/value
+else
+    echo "Invalid lightvalue, setting light as off"
+    echo 0 > /sys/class/gpio/gpio4/value
+fi
+

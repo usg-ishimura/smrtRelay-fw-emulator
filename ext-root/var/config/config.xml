@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <config>
+        <xmlConfig ontime="not scheduled"/>
+        <xmlConfig offtime="not scheduled"/>
+        <xmlConfig lightvalue="0"/>
+    </config>
