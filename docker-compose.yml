@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  firmware:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dumb_thing_firmware
+    ports:
+      - "80:80"
+    volumes:
+      - ./ext-root:/firmware:ro
+    networks:
+      lab:
+        ipv4_address: 10.13.61.10
+    # ── capability hardening ──────────────────────────────────────────────────
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE      # nginx :80
+      - SYS_TIME              # date -s (controller sets system clock)
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,nosuid,noexec   # QEMU sysroot, busybox copy, controller.log
+      - /run:size=8m,nosuid,noexec    # nginx PID file
+      - /var/cache/nginx:size=16m,nosuid,noexec
+      - /var/lib/nginx:size=8m,nosuid,noexec
+    # ── resource limits (DoS / fork-bomb protection) ──────────────────────────
+    pids_limit: 200
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: "1.0"
+    restart: unless-stopped
+    environment:
+      USE_REAL_CONTROLLER: "0"
+      TZ: "Europe/Rome"
+
+  attacker:
+    build:
+      context: .
+      dockerfile: Dockerfile.attacker
+    container_name: dumb_thing_attacker
+    networks:
+      lab:
+        ipv4_address: 10.13.61.20
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,nosuid,noexec   # QEMU sysroot, busybox copy
+      - /run:size=4m,nosuid,noexec
+    pids_limit: 100
+    mem_limit: 256m
+    memswap_limit: 256m
+    cpus: "0.5"
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Rome"
+
+networks:
+  lab:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.13.61.0/24
