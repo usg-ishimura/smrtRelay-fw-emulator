@@ -17,17 +17,11 @@ Exposes a realistic web UI, a simulated UART, and an attacker shell, all accessi
 
 ## Architecture
 
-```
-                         ┌──────────────────────────────────┐
-                         │  dumb_thing_firmware 10.13.61.10 │
-Browser → :80 → nginx ──►│  Flask :5000  (mock controller)  │
-                         │  ttyd  :7681  (UART / Target)    │
-                         └────────────────┬─────────────────┘
-                                          │ lab bridge 10.13.61.0/24
-                         ┌────────────────▼──────────────────┐
-                         │  dumb_thing_attacker 10.13.61.20  │
-                         │  ttyd  :7682  (Attacker shell)    │
-                         └───────────────────────────────────┘
+```mermaid
+graph LR
+    Browser -->|":80"| nginx
+    nginx -->|proxy| FW["<b>dumb_thing_firmware</b> — 10.13.61.10<br/>Flask :5000  (mock controller)<br/>ttyd  :7681  (UART / Target)"]
+    FW -->|"lab bridge 10.13.61.0/24"| ATK["<b>dumb_thing_attacker</b> — 10.13.61.20<br/>ttyd  :7682  (Attacker shell)"]
 ```
 
 | URL | Content |
