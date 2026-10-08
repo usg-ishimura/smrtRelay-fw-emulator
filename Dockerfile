@@ -45,6 +45,6 @@ COPY www/             /app/www/
 COPY entrypoint.sh    /entrypoint.sh
 RUN chmod +x /entrypoint.sh /app/uart-sim/uart-session.sh /app/uart-sim/uart-inner.sh /app/uart-sim/attacker-shell.sh
 
-EXPOSE 80
+EXPOSE 8080
 
 ENTRYPOINT ["/entrypoint.sh"]

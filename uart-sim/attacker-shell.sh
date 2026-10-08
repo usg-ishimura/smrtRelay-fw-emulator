@@ -1,6 +1,6 @@
 #!/bin/bash
 # Attacker shell - runs in a dedicated container (10.13.61.20).
-# Firmware is at 10.13.61.10 (API on :5000, web on :80).
+# Firmware is at 10.13.61.10 (API on :5000, web on :8080).
 
 BOLD="\033[1m"
 RED="\033[31m"
