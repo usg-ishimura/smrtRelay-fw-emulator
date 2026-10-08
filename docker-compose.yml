@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: dumb_thing_firmware
+    depends_on:
+      - attacker
     ports:
       - "80:80"
     volumes:
